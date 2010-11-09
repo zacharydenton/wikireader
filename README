@@ -1,0 +1,12 @@
+usage: wiki [-h] [-m {terse,summary,full,random}] [-n] [-d] [-t]
+            [article [article ...]]
+
+positional arguments:
+  article               the name of the article you want to read
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m {terse,summary,full,random}, --mode {terse,summary,full,random}
+  -n, --news            displays the latest headlines
+  -d, --didyouknow      displays some interesting facts
+  -t, --today           displays noteworthy events that occurred on this date
