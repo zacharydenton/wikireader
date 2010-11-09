@@ -97,6 +97,15 @@ def wiki_summary(title, mode='terse'):
 	article = wiki_parse(title)
 
 	# TODO: check that this is actually an article
+	if "may refer to" in article['paragraphs'][0]:
+		if len(article['paragraphs']) > 1:
+			mode = 'full'
+		else:
+			article = wiki_raw(title)
+			paragraphs = [p.text_content() for p in article.cssselect('p')]
+			headings = [h.text_content() for h in article.cssselect('.mw-headline')]
+			return "\n\n".join(paragraphs + headings)
+
 	if mode == 'terse':
 		first_paragraph = article['paragraphs'][0]
 		first_sentence = split_paragraph(first_paragraph)[0]
