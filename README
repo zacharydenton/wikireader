@@ -1,5 +1,5 @@
-usage: wiki [-h] [-m {terse,summary,full,random}] [-n] [-d] [-t]
-            [article [article ...]]
+usage: wikireader.py [-h] [-m {terse,summary,full,random}] [-n] [-d] [-t]
+                     [article [article ...]]
 
 positional arguments:
   article               the name of the article you want to read
