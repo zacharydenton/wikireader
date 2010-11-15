@@ -15,8 +15,11 @@ def wiki_case(title):
 
 	for example, ['george', 'washington'] becomes 'George_Washington'
 	'''
-	title = [piece.capitalize() for piece in title]
-	return '_'.join(title)
+	if isinstance(title, list):
+		title = [piece.capitalize() for piece in title]
+		return '_'.join(title)
+	else:
+		return title
 
 def wiki_search(query):
 	'''
@@ -183,7 +186,7 @@ def main():
 	'''
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-m', '--mode', default='summary', choices=['terse', 'summary', 'full', 'random'])
-	action = parser.add_mutually_exclusive_group(required=True)
+	action = parser.add_mutually_exclusive_group(required=False)
 	action.add_argument('-n', '--news', action='store_true', help="displays the latest headlines")
 	action.add_argument('-d', '--didyouknow', action='store_true', help="displays some interesting facts")
 	action.add_argument('-t', '--today', action='store_true', help="displays noteworthy events that occurred on this date")
