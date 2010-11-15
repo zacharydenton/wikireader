@@ -3,6 +3,7 @@
 import urllib
 import urllib2
 import lxml.html	
+import ConfigParser
 import pprint
 import argparse
 import random
@@ -45,11 +46,11 @@ def split_paragraph(paragraph):
 	sentenceList = [sentence + '.' for sentence in sentenceList]
 	return sentenceList
 
-def wiki_raw(title):
+def wiki_raw(url, title):
 	'''
 	returns an lxml document of the wikipedia page specified by title
 	'''
-	url = "http://en.wikipedia.org/wiki/" + title
+	url = url + title
 
 	# change user agent; wikipedia doesn't allow the default one
 	opener = urllib2.build_opener()
@@ -59,9 +60,9 @@ def wiki_raw(title):
 	doc = lxml.html.parse(article).getroot()
 	return doc
 
-def wiki_parse(title):
+def wiki_parse(url, title):
 	'''
-	parses a wikipedia page specified by title
+	parses a wiki page specified by title
 
 	returns a dictionary with attributes 'paragraphs' and
 	'images'. 'paragraphs' is a list of strings that represents
@@ -70,7 +71,7 @@ def wiki_parse(title):
 	'''
 	if "wikipedia.org" in title:
 		title = title.split('/')[-1]
-	url = "http://en.wikipedia.org/wiki/" + title
+	url = url + title
 
 	# change user agent; wikipedia doesn't allow the default one
 	opener = urllib2.build_opener()
@@ -93,11 +94,11 @@ def wiki_parse(title):
 
 	return result
 
-def wiki_summary(title, mode='terse'):
+def wiki_read(url, title, mode='terse'):
 	'''
 	returns a summary of a wikipedia article
 	'''
-	article = wiki_parse(title)
+	article = wiki_parse(url, title)
 
 	# TODO: check that this is actually an article
 	if "may refer to" in article['paragraphs'][0]:
@@ -184,6 +185,22 @@ def main():
 	'''
 	main entry point for the program. parses arguments and uses them.
 	'''
+	config = ConfigParser.SafeConfigParser()
+	configfile = "wikireader.cfg"
+	try:
+		open(configfile, 'r')
+	except:
+		config.add_section('Source')
+		config.set('Source', 'language', 'en')
+		config.set('Source', 'url', 'http://%(language)s.wikipedia.org/wiki/')
+		with open(configfile, 'wb') as cfile:
+			config.write(cfile)
+			cfile.close()
+	finally:
+		config.read(configfile)
+		url = config.get('Source', 'url')
+
+
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-m', '--mode', default='summary', choices=['terse', 'summary', 'full', 'random'])
 	action = parser.add_mutually_exclusive_group(required=False)
@@ -202,7 +219,7 @@ def main():
 	else:
 		#article = wiki_search(args.article)
 		article = wiki_case(args.article)
-		print wiki_summary(article, mode=args.mode)
+		print wiki_read(url, article, mode=args.mode)
 
 if __name__ == "__main__":
 	main()
