@@ -100,7 +100,6 @@ def wiki_read(url, title, mode='terse'):
 	'''
 	article = wiki_parse(url, title)
 
-	# TODO: check that this is actually an article
 	if "may refer to" in article['paragraphs'][0]:
 		if len(article['paragraphs']) > 1:
 			mode = 'full'
@@ -123,11 +122,11 @@ def wiki_read(url, title, mode='terse'):
 		# display the whole thing
 		return '\n\n'.join(article['paragraphs'])
 
-def wiki_news(mode=''):
+def wiki_news(url, mode=''):
 	'''
 	returns the news on the main page
 	'''
-	article = wiki_raw("Main_Page")
+	article = wiki_raw(url, "Main_Page")
 	news = article.cssselect('div#mp-itn li')
 	
 	result = []
@@ -143,11 +142,11 @@ def wiki_news(mode=''):
 	else:
 		return '\n\n'.join(result)
 
-def wiki_didyouknow(mode=''):
+def wiki_didyouknow(url, mode=''):
 	'''
 	returns the 'did you know' section on the main page
 	'''
-	article = wiki_raw("Main_Page")
+	article = wiki_raw(url, "Main_Page")
 	didyouknow = article.cssselect('div#mp-dyk li')
 	
 	result = []
@@ -163,11 +162,11 @@ def wiki_didyouknow(mode=''):
 	else:
 		return '\n\n'.join(result)
 
-def wiki_today(mode=''):
+def wiki_today(url, mode=''):
 	'''
 	returns the interesting events that occurred on this date
 	'''
-	article = wiki_raw("Main_Page")
+	article = wiki_raw(url, "Main_Page")
 	today = article.cssselect('div#mp-otd li')
 	
 	result = []
@@ -200,6 +199,7 @@ def main():
 	config = ConfigParser.SafeConfigParser()
 	configfile = "wikireader.cfg"
 	try:
+		open(configfile, 'r') # make sure the configuration file exists
 		config.read(configfile)
 		if args.mode:
 			config.set('Output', 'mode', args.mode)
@@ -222,11 +222,11 @@ def main():
 			cfile.close()
 
 	if args.news:
-		print wiki_news(mode=mode)
+		print wiki_news(url, mode=mode)
 	elif args.didyouknow:
-		print wiki_didyouknow(mode=mode)
+		print wiki_didyouknow(url, mode=mode)
 	elif args.today:
-		print wiki_today(mode=mode)
+		print wiki_today(url, mode=mode)
 	else:
 		#article = wiki_search(args.article)
 		article = wiki_case(args.article)
