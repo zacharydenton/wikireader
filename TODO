@@ -1,3 +1,2 @@
 add support for different languages, different wikis entirely even.
 	we just need a global URL variable.
-	also, we need a persistent configuration file.
