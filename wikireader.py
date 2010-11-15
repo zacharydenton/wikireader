@@ -185,24 +185,11 @@ def main():
 	'''
 	main entry point for the program. parses arguments and uses them.
 	'''
-	config = ConfigParser.SafeConfigParser()
-	configfile = "wikireader.cfg"
-	try:
-		open(configfile, 'r')
-	except:
-		config.add_section('Source')
-		config.set('Source', 'language', 'en')
-		config.set('Source', 'url', 'http://%(language)s.wikipedia.org/wiki/')
-		with open(configfile, 'wb') as cfile:
-			config.write(cfile)
-			cfile.close()
-	finally:
-		config.read(configfile)
-		url = config.get('Source', 'url')
-
-
+	
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-m', '--mode', default='summary', choices=['terse', 'summary', 'full', 'random'])
+	parser.add_argument('-m', '--mode', choices=['terse', 'summary', 'full', 'random'])
+	parser.add_argument('-u', '--url', help="change the wiki url to read from (e.g. http://en.wikipedia.org/wiki/)")
+	parser.add_argument('-l', '--language', help="change the wikipedia language (e.g. sv)")
 	action = parser.add_mutually_exclusive_group(required=False)
 	action.add_argument('-n', '--news', action='store_true', help="displays the latest headlines")
 	action.add_argument('-d', '--didyouknow', action='store_true', help="displays some interesting facts")
@@ -210,16 +197,40 @@ def main():
 	action.add_argument('article',nargs='*',default='Special:Random',help="the name of the article you want to read")
 	args = parser.parse_args()
 
+	config = ConfigParser.SafeConfigParser()
+	configfile = "wikireader.cfg"
+	try:
+		config.read(configfile)
+		if args.mode:
+			config.set('Output', 'mode', args.mode)
+		if args.url:
+			config.set('Source', 'url', args.url)
+		if args.language:
+			config.set('Source', 'language', args.language)
+			config.set('Source', 'url', 'http://%(language)s.wikipedia.org/wiki/')
+	except:
+		config.add_section('Source')
+		config.set('Source', 'language', 'en')
+		config.set('Source', 'url', 'http://%(language)s.wikipedia.org/wiki/')
+		config.add_section('Output')
+		config.set('Output', 'mode', 'summary')
+	finally:
+		url = config.get('Source', 'url')
+		mode = config.get('Output', 'mode')
+		with open(configfile, 'wb') as cfile:
+			config.write(cfile)
+			cfile.close()
+
 	if args.news:
-		print wiki_news(mode=args.mode)
+		print wiki_news(mode=mode)
 	elif args.didyouknow:
-		print wiki_didyouknow(mode=args.mode)
+		print wiki_didyouknow(mode=mode)
 	elif args.today:
-		print wiki_today(mode=args.mode)
+		print wiki_today(mode=mode)
 	else:
 		#article = wiki_search(args.article)
 		article = wiki_case(args.article)
-		print wiki_read(url, article, mode=args.mode)
+		print wiki_read(url, article, mode=mode)
 
 if __name__ == "__main__":
 	main()
