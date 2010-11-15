@@ -1,4 +1,5 @@
-usage: wikireader.py [-h] [-m {terse,summary,full,random}] [-n] [-d] [-t]
+usage: wikireader.py [-h] [-m {terse,summary,full,random}] [-u URL]
+                     [-l LANGUAGE] [-n] [-d] [-t]
                      [article [article ...]]
 
 positional arguments:
@@ -7,6 +8,10 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -m {terse,summary,full,random}, --mode {terse,summary,full,random}
+  -u URL, --url URL     change the wiki url to read from (e.g.
+                        http://en.wikipedia.org/wiki/)
+  -l LANGUAGE, --language LANGUAGE
+                        change the wikipedia language (e.g. sv)
   -n, --news            displays the latest headlines
   -d, --didyouknow      displays some interesting facts
   -t, --today           displays noteworthy events that occurred on this date
