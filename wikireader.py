@@ -222,15 +222,15 @@ def main():
 			cfile.close()
 
 	if args.news:
-		print wiki_news(url, mode=mode)
+		print wiki_news(url, mode=mode).encode('utf-8')
 	elif args.didyouknow:
-		print wiki_didyouknow(url, mode=mode)
+		print wiki_didyouknow(url, mode=mode).encode('utf-8')
 	elif args.today:
-		print wiki_today(url, mode=mode)
+		print wiki_today(url, mode=mode).encode('utf-8')
 	else:
 		#article = wiki_search(args.article)
 		article = wiki_case(args.article)
-		print wiki_read(url, article, mode=mode)
+		print wiki_read(url, article, mode=mode).encode('utf-8')
 
 if __name__ == "__main__":
 	main()
