@@ -8,6 +8,7 @@ import pprint
 import argparse
 import random
 import re
+import os
 from types import *
 
 def wiki_case(title):
@@ -197,7 +198,7 @@ def main():
 	args = parser.parse_args()
 
 	config = ConfigParser.SafeConfigParser()
-	configfile = "wikireader.cfg"
+	configfile = os.path.expanduser("~/.wikireader")
 	try:
 		open(configfile, 'r') # make sure the configuration file exists
 		config.read(configfile)
